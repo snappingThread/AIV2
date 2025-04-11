@@ -151,17 +151,30 @@
                     appendMessage('Your favorite recipes: ' + favorites.join(', '));
                 }
             } else if (query.includes('horoscope')) {
-                const sign = prompt('What is your zodiac sign?');
-                const response = await fetch(`https://aztro.sameerkumar.website/?sign=${sign}&day=today`, {
+                const sign = prompt('What is your zodiac sign? (e.g., Aries, Taurus)');
+                const response = await fetch(`https://aztro.sameerkumar.website/?sign=${sign.toLowerCase()}&day=today`, {
                     method: 'POST'
                 });
                 const data = await response.json();
-                appendMessage(`Your horoscope for today: ${data.description}`);
+                if (data.description) {
+                    appendMessage(`Your horoscope for today: ${data.description}`);
+                } else {
+                    appendMessage('Unable to fetch your horoscope. Please try again later.');
+                }
             } else if (query.includes('element')) {
-                const element = prompt('Which element are you interested in? (e.g., Hydrogen)');
-                const response = await fetch(`https://ptable.com/api/element/${element.toLowerCase()}`);
-                const data = await response.json();
-                appendMessage(`${data.name} (${data.symbol}): Atomic Number ${data.number}`);
+                const element = prompt('Which element are you interested in? (e.g., Hydrogen, Oxygen)');
+                const elementData = {
+                    hydrogen: { name: 'Hydrogen', symbol: 'H', number: 1 },
+                    oxygen: { name: 'Oxygen', symbol: 'O', number: 8 },
+                    carbon: { name: 'Carbon', symbol: 'C', number: 6 }
+                    // Add more elements here as needed
+                };
+                const data = elementData[element.toLowerCase()];
+                if (data) {
+                    appendMessage(`${data.name} (${data.symbol}): Atomic Number ${data.number}`);
+                } else {
+                    appendMessage('Element not found. Please try another element.');
+                }
             } else if (query.includes('fact')) {
                 const response = await fetch('https://catfact.ninja/fact');
                 const data = await response.json();
